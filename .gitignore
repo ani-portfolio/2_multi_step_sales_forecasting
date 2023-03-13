@@ -11,7 +11,7 @@
 src/__pycache__
 
 # venv
-.venv
+.2_venv
 
 # models
 models/
