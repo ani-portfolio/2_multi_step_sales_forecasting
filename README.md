@@ -1,4 +1,4 @@
-# <div align="center"> Retail Store Multi-step Sales Forecasting
+# <div align="center"> Retail Store Multi-Step Sales Forecasting
 ### Tools & Techniques used:
 * Multi-step Time-series forecasting using LightGBM, Linear Regression, Sklearn MultiOutputRegression, RegressorChain
 * Components of a Time-Series
