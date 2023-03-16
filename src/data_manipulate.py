@@ -16,8 +16,8 @@ def train_test_split(df:pd.DataFrame, cutoff_date: datetime, target_column_name:
     """
     # Split the data into training and test sets
     df['date'] = pd.to_datetime(df['date'])
-    train = df[df['date'] < cutoff_date].reset_index(drop=True)
-    test = df[df['date'] >= cutoff_date].reset_index(drop=True)
+    train = df[df['date'] < cutoff_date]
+    test = df[df['date'] >= cutoff_date]
 
     # Split the training and test sets into features and targets
     X_train = train.drop(columns=target_column_name)
@@ -41,8 +41,8 @@ def train_test_split_multi_step(df:pd.DataFrame, cutoff_date: datetime) -> Tuple
     """
     # Split the data into training and test sets
     df['date'] = pd.to_datetime(df['date'])
-    train = df[df['date'] < cutoff_date].reset_index(drop=True)
-    test = df[df['date'] >= cutoff_date].reset_index(drop=True)
+    train = df[df['date'] < cutoff_date]
+    test = df[df['date'] >= cutoff_date]
 
     # Split the training and test sets into features and targets
     target_column_names = [col for col in df.columns if 'multi_step' in col]
@@ -72,5 +72,14 @@ def make_multistep_target(df, steps, lead_time=0):
 
     cols = [col for col in df.columns if 'multi_step' in col]
     df = df.dropna(subset=cols)
+        
+    return df
+
+
+def make_multistep_exogenous_features(df, column, steps, lead_time=0):
+    """Create multi-step exogenous features from a time series.
+    """
+
+    df = pd.concat({f'forward_looking_{column}_step_{i + 1}': df.groupby(['store_nbr', 'family'])[column].shift(-i) for i in range(lead_time, steps + lead_time)}, axis=1)
         
     return df

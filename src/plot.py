@@ -3,6 +3,8 @@ from typing import Optional
 import pandas as pd
 import numpy as np
 import plotly.express as px
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def plot_one_sample(df: pd.DataFrame, sample_id: str, predictions: Optional[pd.Series] = None):
     """Plot one sample from the dataset.
@@ -176,3 +178,54 @@ def plot_periodogram(ts, detrend='linear', ax=None):
     ax.set_ylabel("Variance")
     ax.set_title("Periodogram")
     return ax
+
+
+def plot_multistep(y, every=1, ax=None, palette_kwargs=None):
+    palette_kwargs_ = dict(palette='husl', n_colors=16, desat=None)
+    if palette_kwargs is not None:
+        palette_kwargs_.update(palette_kwargs)
+    palette = sns.color_palette(**palette_kwargs_)
+    if ax is None:
+        fig, ax = plt.subplots()
+    ax.set_prop_cycle(plt.cycler('color', palette))
+    for date, preds in y[::every].iterrows():
+        preds.index = pd.period_range(start=date, periods=len(preds))
+        preds.plot(ax=ax)
+    return ax
+
+
+def plot_predictions(df_preds: pd.DataFrame, df_actual: pd.DataFrame, store_nbr: int, family: str):
+    '''Takes in predictions and actual values and plots them'''
+
+    # select store_nbr and family
+    df_preds = df_preds[(df_preds['store_nbr'] == store_nbr) & (df_preds['family'] == family)]
+    df_preds.set_index('date', inplace=True)
+    df_preds.drop(columns=['store_nbr', 'family'], inplace=True)
+
+    df_actual = df_actual[(df_actual['store_nbr'] == store_nbr) & (df_actual['family'] == family)]
+    df_actual.set_index('date', inplace=True)
+    df_actual.drop(columns=['store_nbr', 'family'], inplace=True)
+
+    # plot predictions
+    plot_params = dict(
+    color="0.75",
+    style=".-",
+    markeredgecolor="0.25",
+    markerfacecolor="0.25")
+
+    fig, (ax1) = plt.subplots(1, 1, figsize=(20, 6))
+    plt.title(f'Actual vs Predicted Sales for Store {store_nbr}, Family {family}')
+
+    # label x-axis
+    ax1.set_xlabel('Date')
+
+    # label y-axis
+    ax1.set_ylabel('Sales')
+
+    palette = dict(palette='husl', n_colors=64)
+
+    ax1 = df_actual.multi_step_1.plot(**plot_params, ax=ax1)
+    ax1 = plot_multistep(df_preds, ax=ax1, palette_kwargs=palette)
+    _ = ax1.legend(['Actual Sale', 'Predicted Sale'])
+
+    plt.show()

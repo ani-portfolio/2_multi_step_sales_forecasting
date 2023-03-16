@@ -15,3 +15,6 @@ src/__pycache__
 
 # models
 models/
+
+# old notebooks
+/notebooks_old
