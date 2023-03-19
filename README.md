@@ -1,17 +1,3 @@
-# <div align="center"> Multi-Step Sales Forecasting: Explores 3 Strategies
-### Tools & Techniques used:
-* Multi-step Time-series forecasting using LightGBM, Linear Regression, Sklearn MultiOutputRegression, RegressorChain
-* Components of a Time-Series
-    * Trend
-    * Seasonality
-    * Cyclicality
-* Determine components using;
-    * Correlogram
-    * Periodogram
-    * Mutual Information
-* Optuna Hyper-parameter Tuning
-
-
 ## <div align="center">Multi-Step Sales Forecasting: Explores 3 Strategies
 
 ### Design Overview & Documentation
